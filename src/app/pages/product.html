@@ -1,0 +1,157 @@
+@let p = product();
+
+<nav class="crumbs container" aria-label="Breadcrumb">
+  <a routerLink="/">Home</a> /
+  <a [routerLink]="['/catalogue', p.category.slug]">{{ p.category.name }}</a> /
+  @if (p.subcategory) {
+    <a [routerLink]="['/catalogue', p.category.slug, p.subcategory.slug]">{{ p.subcategory.name }}</a> /
+  }
+  <span>{{ p.name }}</span>
+</nav>
+
+<!-- En-tête produit -->
+<section class="hero container">
+  <div class="gallery">
+    <div class="gallery__main">
+      @if (activeImage(); as img) {
+        <img class="product-img" [src]="img.src" [width]="img.width" [height]="img.height" [alt]="p.name" fetchpriority="high" />
+      } @else {
+        <span class="gallery__empty">
+          <img src="brand/contextplus-logo.png" alt="" width="300" height="178" />
+          <span>Image coming soon</span>
+        </span>
+      }
+    </div>
+    @if (p.images.length > 1) {
+      <ul class="gallery__thumbs">
+        @for (img of p.images; track img.src; let i = $index) {
+          <li>
+            <button type="button" [class.active]="img === activeImage()" (click)="activeImage.set(img)"
+                    [attr.aria-label]="'Show image ' + (i + 1)">
+              <img class="product-img" [src]="img.src" alt="" width="80" height="80" loading="lazy" />
+            </button>
+          </li>
+        }
+      </ul>
+    }
+  </div>
+
+  <div class="info">
+    <p class="eyebrow">{{ p.subcategory?.name ?? p.category.name }}</p>
+    <h1 class="h1 info__title">{{ p.name }}</h1>
+    <p class="lead">{{ p.summary }}</p>
+    @if (p.codes.length) {
+      <dl class="codes">
+        <dt>Product code</dt>
+        <dd>
+          @for (c of p.codes; track c) {
+            <span class="chip">{{ c }}</span>
+          }
+        </dd>
+      </dl>
+    }
+    <div class="actions">
+      <a routerLink="/contact" [queryParams]="{ product: p.codes.length ? p.codes[0] : p.name }" class="btn btn--primary">
+        Request a quote <app-icon name="chevron" />
+      </a>
+      @if (mainDoc(); as d) {
+        <a [href]="d.url" target="_blank" rel="noopener" class="btn">
+          {{ docLabels[d.type] }} <app-icon name="download" />
+        </a>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- Navigation de sections -->
+<nav class="tabs" aria-label="Product sections">
+  <ul class="container">
+    @for (s of sections(); track s.id) {
+      <li><a [routerLink]="[]" [fragment]="s.id">{{ s.label }}</a></li>
+    }
+  </ul>
+</nav>
+
+<!-- Présentation -->
+<section id="overview" class="block container">
+  <div class="block__head" appReveal>
+    <p class="eyebrow">Product overview</p>
+    <h2 class="h2">{{ p.family ?? p.subcategory?.name ?? p.category.name }}</h2>
+  </div>
+  <div class="prose" appReveal="p">
+    <p>{{ p.summary }}</p>
+    @for (para of p.description; track $index) {
+      <p>{{ para }}</p>
+    }
+  </div>
+</section>
+
+<!-- Fiche technique -->
+@if (hasTechnical()) {
+  <section id="technical" class="block container">
+    <div class="block__head" appReveal>
+      <p class="eyebrow">Technical overview</p>
+      <h2 class="h2">Specifications &amp; features</h2>
+    </div>
+    <dl class="specs">
+      <div><dt>Product line</dt><dd>{{ p.category.name }}</dd></div>
+      @if (p.subcategory) {
+        <div><dt>Range</dt><dd>{{ p.subcategory.name }}</dd></div>
+      }
+      <div><dt>Product name</dt><dd>{{ p.name }}</dd></div>
+      @if (p.codes.length) {
+        <div><dt>Product code</dt><dd>{{ p.codes.join(' · ') }}</dd></div>
+      }
+      @for (s of p.specs; track $index) {
+        <div><dt>{{ s.label }}</dt><dd>{{ s.value }}</dd></div>
+      }
+    </dl>
+    @if (p.features.length) {
+      <h3 class="features__title">Key features</h3>
+      <ul class="features" appReveal="li">
+        @for (f of p.features; track $index) {
+          <li><app-icon name="check" [size]="18" />{{ f }}</li>
+        }
+      </ul>
+    }
+  </section>
+}
+
+<!-- Documents -->
+@if (p.documents.length) {
+  <section id="documents" class="block container">
+    <div class="block__head" appReveal>
+      <p class="eyebrow">Downloads</p>
+      <h2 class="h2">Product documents</h2>
+    </div>
+    <ul class="docs">
+      @for (d of p.documents; track d.url) {
+        <li>
+          <a [href]="d.url" target="_blank" rel="noopener" class="doc">
+            <span class="doc__type">{{ docLabels[d.type] }}</span>
+            <span class="doc__title">{{ d.title }}</span>
+            <span class="doc__meta">PDF · {{ formatSize(d.size) }}</span>
+            <span class="doc__icon"><app-icon name="download" [size]="18" /></span>
+          </a>
+        </li>
+      }
+    </ul>
+  </section>
+}
+
+<!-- Produits liés -->
+@if (related().length) {
+  <section id="related" class="block container">
+    <div class="block__head" appReveal>
+      <p class="eyebrow">Related products</p>
+      <h2 class="h2">From the same range</h2>
+    </div>
+    <div class="related" appReveal="app-product-card">
+      @for (r of related(); track r.slug) {
+        <app-product-card [product]="r" />
+      }
+    </div>
+  </section>
+}
+
+<app-contact-band variant="compact" />

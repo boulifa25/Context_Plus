@@ -1,0 +1,154 @@
+[
+  {
+    "id": "manuals",
+    "title": "Installation Manuals",
+    "intro": "CAST protocol panels, detectors and modules.",
+    "documents": [
+      {
+        "title": "DFU0002410 – Context – Plus – CA408 CON – CAST – Detector – Base – Rev – 1",
+        "type": "manual",
+        "url": "/media/docs/65068a17/dfu0002410-context-plus-ca408-con-cast-detector-base-rev-1.pdf",
+        "size": 248791
+      },
+      {
+        "title": "DFU4020005 – Context – Plus – CA402 CON – CAST – Heat – Detector – Rev – 2",
+        "type": "manual",
+        "url": "/media/docs/9f93e2eb/dfu4020005-context-plus-ca402-con-cast-heat-detector-rev-2.pdf",
+        "size": 389695
+      },
+      {
+        "title": "DFU4140005 – Context – Plus – CA414 CON – CAST – Multisensor – Fire – Detector – Rev – 2",
+        "type": "manual",
+        "url": "/media/docs/db436206/dfu4140005-context-plus-ca414-con-cast-multisensor-fire-detector-rev-2.pdf",
+        "size": 382491
+      },
+      {
+        "title": "DFU4160005 – Context – Plus – CA416 CON – CAST – Smoke – Detector – Rev – 2",
+        "type": "manual",
+        "url": "/media/docs/3e4a1fff/dfu4160005-context-plus-ca416-con-cast-smoke-detector-rev-2.pdf",
+        "size": 323824
+      },
+      {
+        "title": "DFU4305005 – Context – Plus – CAST – Hi – Output – Range – Rev – 4",
+        "type": "manual",
+        "url": "/media/docs/8afa3201/dfu4305005-context-plus-cast-hi-output-range-rev-4.pdf",
+        "size": 1390897
+      },
+      {
+        "title": "DFU4315005 – Context – Plus – CAST – Base – Mount – Range – Rev – 2",
+        "type": "manual",
+        "url": "/media/docs/65198535/dfu4315005-context-plus-cast-base-mount-range-rev-2.pdf",
+        "size": 717277
+      },
+      {
+        "title": "DFU4700005 – Context – Plus – CA470 CON – CAST – MCP – Rev – 2",
+        "type": "manual",
+        "url": "/media/docs/de67a195/dfu4700005-context-plus-ca470-con-cast-mcp-rev-2.pdf",
+        "size": 323914
+      },
+      {
+        "title": "DFU5010010 – Context – Plus – CAST – XFP – 1 – Loop – 16Z – Engineers – Manual – Rev – 2",
+        "type": "manual",
+        "url": "/media/docs/37295240/dfu5010010-context-plus-cast-xfp-1-loop-16z-engineers-manual-rev-2.pdf",
+        "size": 8264437
+      },
+      {
+        "title": "DFU5010030 – Context – Plus – CAST – XFP – 1 – or – 2 – Loop – 32Z – Engineers – Manual – Rev – 2",
+        "type": "manual",
+        "url": "/media/docs/3e5d5927/dfu5010030-context-plus-cast-xfp-1-or-2-loop-32z-engineers-manual-rev-2.pdf",
+        "size": 8550251
+      },
+      {
+        "title": "DFU5020020 – Context – Plus – CAST – XFP – User – Manual – Rev – 2",
+        "type": "manual",
+        "url": "/media/docs/c016f570/dfu5020020-context-plus-cast-xfp-user-manual-rev-2.pdf",
+        "size": 1428139
+      },
+      {
+        "title": "DFU5020040 – Context – Plus – CAST – XFP – Comm – Quick – Start – Guide – Rev – 1",
+        "type": "manual",
+        "url": "/media/docs/239def3a/dfu5020040-context-plus-cast-xfp-comm-quick-start-guide-rev-1.pdf",
+        "size": 1332240
+      },
+      {
+        "title": "DFU7300005 – Context – Plus – CA730 CON – CAST – IO – Module – Rev – 2",
+        "type": "manual",
+        "url": "/media/docs/b9852539/dfu7300005-context-plus-ca730-con-cast-io-module-rev-2.pdf",
+        "size": 338744
+      }
+    ]
+  },
+  {
+    "id": "brochures",
+    "title": "Brochures & Catalogues",
+    "intro": "Product range brochures and sales literature.",
+    "documents": [
+      {
+        "title": "CONTEXT PLUS HFC227ea Systems SALES BROCHURE 01 – 17",
+        "type": "brochure",
+        "url": "/media/docs/8509d32c/context-plus-hfc227ea-systems-sales-brochure-01-17.pdf",
+        "size": 3014619
+      },
+      {
+        "title": "CP60911 Main – Reserve leaflet",
+        "type": "brochure",
+        "url": "/media/docs/0938d903/cp60911-main-reserve-leaflet.pdf",
+        "size": 107034
+      },
+      {
+        "title": "FP Leaflet Context Plus",
+        "type": "brochure",
+        "url": "/media/docs/5db46c3f/fp-leaflet-context-plus.pdf",
+        "size": 314310
+      },
+      {
+        "title": "MFP Leaflet Context Plus",
+        "type": "brochure",
+        "url": "/media/docs/49d0b6df/mfp-leaflet-context-plus.pdf",
+        "size": 309087
+      },
+      {
+        "title": "Context – Plus – S65E Sales – Leaflet UL",
+        "type": "brochure",
+        "url": "/media/docs/9c5ddc54/context-plus-s65e-sales-leaflet-ul.pdf",
+        "size": 233032
+      },
+      {
+        "title": "FIREPLUS – LHD DIGITAL LINEAR HEAT DETECTION CABLE Sales Leaflet",
+        "type": "brochure",
+        "url": "/media/docs/7428b285/fireplus-lhd-digital-linear-heat-detection-cable-sales-leaflet.pdf",
+        "size": 280865
+      },
+      {
+        "title": "FIREPLUS – LHD DIGITAL INTERFACE TEST UNIT Sales Leaflet",
+        "type": "brochure",
+        "url": "/media/docs/0d7ac965/fireplus-lhd-digital-interface-test-unit-sales-leaflet.pdf",
+        "size": 523158
+      },
+      {
+        "title": "Context Plus HP High Performance leaflet 05 – 19",
+        "type": "brochure",
+        "url": "/media/docs/a6cc2ecd/context-plus-hp-high-performance-leaflet-05-19.pdf",
+        "size": 223807
+      },
+      {
+        "title": "Context Plus XPS SPECIAL Cable leaflet V1 05 – 19",
+        "type": "brochure",
+        "url": "/media/docs/c5a002d6/context-plus-xps-special-cable-leaflet-v1-05-19.pdf",
+        "size": 216433
+      },
+      {
+        "title": "Context Plus Mains & Battery Alarms (brochure 2016)",
+        "type": "brochure",
+        "url": "/media/docs/1a689119/context-plus-mains-battery-alarms-jan16.pdf",
+        "size": 8975138
+      },
+      {
+        "title": "Context Plus Conventional & Wireless (brochure 2016)",
+        "type": "brochure",
+        "url": "/media/docs/a6643e15/context-plus-conventional-wireless-jan16.pdf",
+        "size": 5084550
+      }
+    ]
+  }
+]

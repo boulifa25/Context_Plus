@@ -1,0 +1,212 @@
+[
+  {
+    "slug": "conventional-fire-systems",
+    "name": "Conventional Fire Systems",
+    "short": "Conventional",
+    "intro": "Conventional fire detection panels, detectors, call points, sounders and linear heat detection.",
+    "hidden": false,
+    "count": 66,
+    "subcategories": [
+      {
+        "slug": "context-plus-conventional-beam-detectors",
+        "name": "Context Plus Conventional Beam Detectors",
+        "count": 1
+      },
+      {
+        "slug": "conventional-call-points-bells-sounders-beacons",
+        "name": "Conventional Call Points, Bells, Sounders & Beacons",
+        "count": 11
+      },
+      {
+        "slug": "conventional-fire-detection-panels",
+        "name": "Conventional Fire Detection Panels",
+        "count": 33
+      },
+      {
+        "slug": "conventional-fire-detectors",
+        "name": "Conventional Fire Detectors",
+        "count": 5
+      },
+      {
+        "slug": "digital-linear-heat-detection-cable",
+        "name": "Digital Linear Heat Detection Cable",
+        "count": 15
+      },
+      {
+        "slug": "power-supplies",
+        "name": "Power Supplies",
+        "count": 1
+      }
+    ]
+  },
+  {
+    "slug": "analogue-addressable-fire-systems",
+    "name": "Analogue Addressable Fire Systems",
+    "short": "Addressable",
+    "intro": "Networkable analogue addressable panels, detectors, interfaces, voice alarms and refuge systems.",
+    "hidden": false,
+    "count": 121,
+    "subcategories": [
+      {
+        "slug": "analogue-addressable-audio-visual-voice-alarms",
+        "name": "Analogue Addressable Audio Visual & Voice Alarms",
+        "count": 22
+      },
+      {
+        "slug": "analogue-addressable-duct-flame-beam-aspirating-detectors",
+        "name": "Analogue Addressable Duct, Flame, Beam & Aspirating Detectors",
+        "count": 16
+      },
+      {
+        "slug": "analogue-addressable-fire-detection-panels",
+        "name": "Analogue Addressable Fire Detection Panels",
+        "count": 27
+      },
+      {
+        "slug": "analogue-addressable-fire-detectors",
+        "name": "Analogue Addressable Fire Detectors",
+        "count": 22
+      },
+      {
+        "slug": "analogue-addressable-interfaces",
+        "name": "Analogue Addressable Interfaces",
+        "count": 11
+      },
+      {
+        "slug": "analogue-addressable-manual-call-points-and-pull-stations",
+        "name": "Analogue Addressable Manual Call Points And Pull Stations",
+        "count": 4
+      },
+      {
+        "slug": "fire-telephone-disabled-refuge-systems",
+        "name": "Fire Telephone & Disabled Refuge Systems",
+        "count": 14
+      },
+      {
+        "slug": "voice-evacuation-systems",
+        "name": "Voice Evacuation Systems",
+        "count": 5
+      }
+    ]
+  },
+  {
+    "slug": "clean-agent-fire-suppression-systems",
+    "name": "Clean Agent Fire Suppression Systems",
+    "short": "Suppression",
+    "intro": "HFC227ea clean agent cylinders, valves, accessories and gas extinguishing control panels.",
+    "hidden": false,
+    "count": 44,
+    "subcategories": [
+      {
+        "slug": "clean-agent-fire-extinguishing-system-cylinders-accessories",
+        "name": "Clean Agent Fire Extinguishing System Cylinders & Accessories",
+        "count": 33
+      },
+      {
+        "slug": "gas-extinguishing-panels-accessories",
+        "name": "Gas Extinguishing Panels & Accessories",
+        "count": 11
+      }
+    ]
+  },
+  {
+    "slug": "fire-resistant-cables",
+    "name": "Fire Resistant Cables",
+    "short": "Cables",
+    "intro": "LPCB approved, low smoke zero halogen fire resistant cables in HP, XP and XPS ranges.",
+    "hidden": false,
+    "count": 19,
+    "subcategories": [
+      {
+        "slug": "hp-high-performance-fire-resistant-cables",
+        "name": "HP HIGH PERFORMANCE Fire Resistant Cables",
+        "count": 3
+      },
+      {
+        "slug": "xp-premium-fire-resistant-cables",
+        "name": "XP PREMIUM Fire Resistant Cables",
+        "count": 8
+      },
+      {
+        "slug": "xps-special-fire-resistant-cables",
+        "name": "XPS SPECIAL Fire Resistant Cables",
+        "count": 3
+      },
+      {
+        "slug": "other-fire-resistant-cables",
+        "name": "Other Fire Resistant Cables",
+        "count": 5
+      }
+    ]
+  },
+  {
+    "slug": "domestic-fire-alarms",
+    "name": "Domestic Fire Alarms",
+    "short": "Domestic",
+    "intro": "Battery and mains powered smoke, heat and carbon monoxide alarms with relays and accessories.",
+    "hidden": false,
+    "count": 33,
+    "subcategories": [
+      {
+        "slug": "alarm-relays-accessories",
+        "name": "Alarm Relays & Accessories",
+        "count": 9
+      },
+      {
+        "slug": "battery-operated-smoke-heat-alarms",
+        "name": "Battery Operated Smoke & Heat Alarms",
+        "count": 9
+      },
+      {
+        "slug": "carbon-monoxide-co-alarms",
+        "name": "Carbon Monoxide (CO) Alarms",
+        "count": 8
+      },
+      {
+        "slug": "mains-operated-smoke-heat-alarms",
+        "name": "Mains Operated Smoke & Heat Alarms",
+        "count": 7
+      }
+    ]
+  },
+  {
+    "slug": "wireless-fire-systems",
+    "name": "Wireless Fire Systems",
+    "short": "Wireless",
+    "intro": "RadioLINK wireless smoke and heat alarms, call points, panel interfaces and I/O devices.",
+    "hidden": false,
+    "count": 11,
+    "subcategories": [
+      {
+        "slug": "wireless-fire-panel-interface-io-devices",
+        "name": "Wireless Fire Panel Interface & IO Devices",
+        "count": 4
+      },
+      {
+        "slug": "wireless-heat-smoke-detectors",
+        "name": "Wireless Heat & Smoke Detectors",
+        "count": 4
+      },
+      {
+        "slug": "wireless-manual-call-points-control-devices",
+        "name": "Wireless Manual Call Points & Control Devices",
+        "count": 3
+      }
+    ]
+  },
+  {
+    "slug": "other-products",
+    "name": "Other Products",
+    "short": "Other",
+    "intro": "Network and communication accessories.",
+    "hidden": true,
+    "count": 2,
+    "subcategories": [
+      {
+        "slug": "accessoires-reseau-communication",
+        "name": "Accessoires réseau  communication",
+        "count": 2
+      }
+    ]
+  }
+]

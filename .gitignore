@@ -42,3 +42,6 @@ __screenshots__/
 # System files
 .DS_Store
 Thumbs.db
+
+# Médias générés par npm run catalogue (PDF + images, ~130 Mo)
+/public/media/

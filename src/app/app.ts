@@ -1,12 +1,19 @@
-import { Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { Footer } from './layout/footer';
+import { Header } from './layout/header';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
-  templateUrl: './app.html',
-  styleUrl: './app.scss'
+  imports: [RouterOutlet, Header, Footer],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  template: `
+    <a class="skip-link" href="#main">Skip to content</a>
+    <app-header />
+    <main id="main">
+      <router-outlet />
+    </main>
+    <app-footer />
+  `,
 })
-export class App {
-  protected readonly title = signal('contextplus-website');
-}
+export class App {}

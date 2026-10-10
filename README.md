@@ -1,59 +1,36 @@
-# ContextplusWebsite
+# Context Plus — site web
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.24.
+Refonte du site [contextplus.co.uk](https://contextplus.co.uk) avec le design de SelectFire Plus.
+Angular 21 (SSR + pré-rendu de toutes les pages), GSAP pour les animations.
 
-## Development server
-
-To start a local development server, run:
-
-```bash
-ng serve
-```
-
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+## Démarrer
 
 ```bash
-ng generate component component-name
+npm install
+npm run catalogue   # génère données + médias depuis ../ContextPlus (voir ci-dessous)
+npm start           # http://localhost:4200
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+## Données du catalogue
+
+`npm run catalogue` lit `../ContextPlus/catalogue/catalogue.json` (produit par
+`extract_catalogue.py`) et génère :
+
+- `src/app/data/generated/` : index, catégories, téléchargements et une fiche JSON par produit (versionné) ;
+- `public/media/` : images WebP optimisées et PDF dédoublonnés (~130 Mo, **non versionné**).
+
+Autre emplacement du catalogue : `CATALOGUE_ROOT=/chemin/vers/ContextPlus npm run catalogue`.
+
+## Build de production
 
 ```bash
-ng generate --help
+npm run build                                   # pré-rend ~340 pages dans dist/
+npm run serve:ssr:contextplus-website           # serveur Node (port 4000)
 ```
 
-## Building
+## À personnaliser
 
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+- `src/app/site.config.ts` : coordonnées, réseaux sociaux, point d'envoi du formulaire de contact
+  (vide = ouverture du client mail).
+- `src/styles.scss` : couleurs (accent marine Context Plus ; l'accent rouge d'origine est noté en tête du fichier).
+- `public/brand/` : logo (à remplacer par une version vectorielle SVG si disponible).

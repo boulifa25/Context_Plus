@@ -1,0 +1,88 @@
+<header class="header" [class.header--mobile-open]="mobileOpen()">
+  <div class="top container">
+    <a routerLink="/" class="logo" aria-label="Context Plus — home">
+      <img src="brand/contextplus-logo.png" alt="Context Plus" width="300" height="178" />
+    </a>
+
+    <form class="search" role="search" (submit)="search($event, searchInput)">
+      <label for="header-search" class="sr-only">Search products</label>
+      <input #searchInput id="header-search" type="search" placeholder="Search products or codes" autocomplete="off" />
+      <button type="submit" aria-label="Search"><app-icon name="search" /></button>
+    </form>
+
+    <a routerLink="/contact" class="btn btn--sm contact-btn">Contact <app-icon name="chevron" [size]="14" /></a>
+
+    <button type="button" class="burger" [attr.aria-expanded]="mobileOpen()" aria-controls="mobile-menu"
+            (click)="mobileOpen.set(!mobileOpen())">
+      <span class="sr-only">Menu</span>
+      <app-icon [name]="mobileOpen() ? 'close' : 'menu'" [size]="22" />
+    </button>
+  </div>
+
+  <nav class="nav" aria-label="Main">
+    <div class="nav__inner container">
+      <div class="nav__group">
+        <a routerLink="/" class="pill" routerLinkActive="pill--active" [routerLinkActiveOptions]="{ exact: true }">Home</a>
+        <a routerLink="/products" class="pill" routerLinkActive="pill--active" [routerLinkActiveOptions]="{ exact: true }">Catalogue</a>
+      </div>
+
+      <ul class="nav__cats">
+        @for (cat of catalogue.navCategories; track cat.slug) {
+          <li class="dd" [class.dd--open]="openMenu() === cat.slug"
+              (mouseenter)="openMenu.set(cat.slug)" (mouseleave)="openMenu.set(null)">
+            <button type="button" class="dd__trigger" [attr.aria-expanded]="openMenu() === cat.slug"
+                    (click)="toggle(cat.slug)">
+              {{ cat.short }} <app-icon name="caret" [size]="14" />
+            </button>
+            <div class="dd__panel">
+              <p class="dd__title">{{ cat.name }}</p>
+              <ul>
+                @for (sub of cat.subcategories; track sub.slug) {
+                  <li><a [routerLink]="['/catalogue', cat.slug, sub.slug]">{{ sub.name }}</a></li>
+                }
+              </ul>
+              <a class="dd__all link-arrow" [routerLink]="['/catalogue', cat.slug]">
+                View all {{ cat.count }} products <app-icon name="chevron" />
+              </a>
+            </div>
+          </li>
+        }
+      </ul>
+
+      <div class="nav__group">
+        <a routerLink="/about" class="pill" routerLinkActive="pill--active">Our company</a>
+        <a routerLink="/downloads" class="pill" routerLinkActive="pill--active">Downloads</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Menu mobile -->
+  <div id="mobile-menu" class="mobile" [hidden]="!mobileOpen()">
+    <form class="search search--mobile" role="search" (submit)="search($event, mobileSearch)">
+      <label for="mobile-search" class="sr-only">Search products</label>
+      <input #mobileSearch id="mobile-search" type="search" placeholder="Search products or codes" />
+      <button type="submit" aria-label="Search"><app-icon name="search" /></button>
+    </form>
+    <a routerLink="/" class="mobile__link">Home</a>
+    <a routerLink="/products" class="mobile__link">Catalogue</a>
+    @for (cat of catalogue.navCategories; track cat.slug) {
+      <div class="mobile__section">
+        <button type="button" class="mobile__link" [attr.aria-expanded]="mobileSection() === cat.slug"
+                (click)="toggleMobileSection(cat.slug)">
+          {{ cat.name }} <app-icon name="caret" [size]="16" />
+        </button>
+        @if (mobileSection() === cat.slug) {
+          <ul class="mobile__subs">
+            @for (sub of cat.subcategories; track sub.slug) {
+              <li><a [routerLink]="['/catalogue', cat.slug, sub.slug]">{{ sub.name }}</a></li>
+            }
+            <li><a [routerLink]="['/catalogue', cat.slug]" class="mobile__all">View all {{ cat.count }} products</a></li>
+          </ul>
+        }
+      </div>
+    }
+    <a routerLink="/about" class="mobile__link">Our company</a>
+    <a routerLink="/downloads" class="mobile__link">Downloads</a>
+    <a routerLink="/contact" class="btn btn--primary btn--block">Contact us <app-icon name="chevron" /></a>
+  </div>
+</header>

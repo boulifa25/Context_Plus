@@ -36,7 +36,7 @@ const PAGE = 24;
       <aside class="filters" aria-label="Product filters">
         <p class="filters__title">Product filters</p>
         <a routerLink="/products" class="filter" [class.filter--active]="!category()">
-          All products <span>{{ catalogue.products.length }}</span>
+          All products <span>{{ catalogue.productCount }}</span>
         </a>
         @for (cat of catalogue.categories; track cat.slug) {
           <a [routerLink]="['/catalogue', cat.slug]" class="filter"
@@ -66,8 +66,8 @@ const PAGE = 24;
 
         @if (results().length) {
           <div class="grid">
-            @for (p of visible(); track p.slug) {
-              <app-product-card [product]="p" />
+            @for (p of visible(); track p.slug; let i = $index) {
+              <app-product-card [product]="p" [priority]="i < 3" />
             }
           </div>
           @if (visible().length < results().length) {
@@ -153,7 +153,7 @@ export class CataloguePage {
   protected readonly results = computed(() => {
     const cat = this.category();
     const sub = this.subcategory();
-    const list = this.catalogue.products.filter(
+    const list = this.catalogue.products().filter(
       (p) => (!cat || p.category === cat.slug) && (!sub || p.subcategory === sub.slug),
     );
     return this.catalogue.search(this.query(), list);

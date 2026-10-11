@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 180" fill="none" stroke="#32297a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><!-- Détecteur adressable sur sa boucle -->
+<path d="M20 52h200" opacity=".45" stroke-dasharray="2 8"/><path d="M60 52h120v18H60z"/><path d="M68 70c0 34 22 56 52 56s52-22 52-56"/>
+<path d="M92 92h56M98 104h44" opacity=".55"/><circle cx="120" cy="126" r="7"/><circle cx="152" cy="84" r="3" fill="#32297a" stroke="none"/>
+<path d="M44 52v-14M196 52v-14" opacity=".45"/></svg>

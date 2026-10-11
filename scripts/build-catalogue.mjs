@@ -12,17 +12,23 @@
 //   public/media/products/<slug>/<n>.webp      images optimisées
 //   public/media/docs/<hash>/<fichier>.pdf     PDF dédoublonnés
 import { createHash } from 'node:crypto';
-import { copyFile, mkdir, readFile, rm, stat, writeFile } from 'node:fs/promises';
+import { copyFile, mkdir, readdir, readFile, rm, stat, writeFile } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import sharp from 'sharp';
+import { readCsv } from './csv.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const PROJECT = path.resolve(HERE, '..');
 const ROOT = path.resolve(process.env.CATALOGUE_ROOT ?? path.join(PROJECT, '..', 'ContextPlus'));
 const DATA_OUT = path.join(PROJECT, 'src', 'app', 'data', 'generated');
 const MEDIA_OUT = path.join(PROJECT, 'public', 'media');
+// Noms relus (npm run names) et choix image par image (npm run images:review)
+const NAMES_CSV = path.join(PROJECT, 'content', 'product-names.csv');
+const IMAGES_CSV = path.join(PROJECT, 'content', 'image-review.csv');
+// Détourages produits par scripts/cutout_images.py
+const CUTOUTS = path.join(ROOT, '_cutouts');
 
 // Ordre, libellés courts (menu) et textes des catégories racines.
 const CATEGORY_META = {
@@ -120,32 +126,96 @@ async function publishDoc(doc) {
   return published;
 }
 
-async function publishImage(srcRel, slug, index) {
-  const src = path.join(ROOT, srcRel);
+const CANVAS = 1000; // images détourées : carré transparent, produit centré
+const CONTENT = 840; // taille max du produit dans le carré (marges identiques partout)
+
+/**
+ * Publie une image produit en WebP.
+ *  - mode "cutout"   : détourage rembg recentré sur un carré transparent (rendu homogène)
+ *  - mode "original" : photo d'origine redimensionnée (tableaux, schémas, détourage raté)
+ */
+async function publishImage(srcRel, slug, index, mode) {
+  // Buffer plutôt que chemin : libvips ne gère pas les chemins Windows > 260 caractères
+  const buffer = await readFile(path.join(ROOT, srcRel));
+  const hash = createHash('md5').update(buffer).digest('hex');
+  const cutout = path.join(CUTOUTS, `${hash}.png`);
+  const useCutout = mode === 'cutout' && existsSync(cutout);
   const rel = `media/products/${slug}/${index}.webp`;
   const dest = path.join(PROJECT, 'public', rel);
-  if (!existsSync(dest)) {
-    await mkdir(path.dirname(dest), { recursive: true });
-    // Buffer plutôt que chemin : libvips ne gère pas les chemins Windows > 260 caractères
-    await sharp(await readFile(src)).rotate().resize(900, 900, { fit: 'inside', withoutEnlargement: true }).webp({ quality: 82 }).toFile(dest);
+  await mkdir(path.dirname(dest), { recursive: true });
+  if (useCutout) {
+    const product = await sharp(cutout)
+      .resize(CONTENT, CONTENT, { fit: 'inside' })
+      .png()
+      .toBuffer();
+    await sharp({ create: { width: CANVAS, height: CANVAS, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } } })
+      .composite([{ input: product, gravity: 'center' }])
+      .webp({ quality: 84, alphaQuality: 90 })
+      .toFile(dest);
+  } else {
+    await sharp(buffer).rotate().resize(900, 900, { fit: 'inside', withoutEnlargement: true }).webp({ quality: 82 }).toFile(dest);
   }
   const { width, height } = await sharp(dest).metadata();
-  return { src: '/' + rel, width, height };
+  // Variante légère pour les vignettes (cartes catalogue) : ≈ 4× moins lourde
+  const small = rel.replace(/\.webp$/, '-480.webp');
+  await sharp(dest).resize(480, 480, { fit: 'inside', withoutEnlargement: true }).webp({ quality: 80, alphaQuality: 85 }).toFile(path.join(PROJECT, 'public', small));
+  const smallWidth = Math.min(480, width);
+  return { src: '/' + rel, srcset: `/${small} ${smallWidth}w, /${rel} ${width}w`, width, height, cutout: useCutout };
+}
+
+/** Empreinte visuelle : miniature 16×16 en niveaux de gris. */
+async function fingerprint(file) {
+  return sharp(await readFile(file)).resize(16, 16, { fit: 'fill' }).greyscale().raw().toBuffer();
+}
+
+/** Deux empreintes proches (écart moyen < 6 niveaux sur 255) = même photo. */
+function similar(a, b) {
+  let diff = 0;
+  for (let i = 0; i < a.length; i++) diff += Math.abs(a[i] - b[i]);
+  return diff / a.length < 6;
+}
+
+/** Corrections de classement repérées à la relecture. */
+function fixCategory(p) {
+  // Codes FSX-… = gamme XPS Special (même préfixe que les câbles XPS du dossier)
+  if (p.category === 'Fire Resistant Cables' && /^FSX-/i.test(p.product_codes[0] ?? '')) {
+    return { ...p, subcategory: 'XPS SPECIAL Fire Resistant Cables' };
+  }
+  return p;
 }
 
 async function main() {
   const catalogue = JSON.parse(await readFile(path.join(ROOT, 'catalogue', 'catalogue.json'), 'utf8'));
-  await rm(DATA_OUT, { recursive: true, force: true });
+  // Pas de suppression du dossier : « ng serve » perdrait sa surveillance des fichiers.
+  await rm(path.join(MEDIA_OUT, 'products'), { recursive: true, force: true });
   await mkdir(path.join(DATA_OUT, 'products'), { recursive: true });
 
-  // Slugs uniques et lisibles (nom du produit, + code si collision)
+  const names = new Map(existsSync(NAMES_CSV) ? (await readCsv(NAMES_CSV)).map((r) => [r.cle, r]) : []);
+  const imageModes = new Map(
+    existsSync(IMAGES_CSV) ? (await readCsv(IMAGES_CSV)).map((r) => [`${r.cle}#${r.image}`, r.mode]) : [],
+  );
+  if (!names.size) console.warn('⚠ content/product-names.csv absent : noms d’origine utilisés (lancez npm run names).');
+
+  // Nom relu + slugs uniques et lisibles (nom du produit, + code si collision)
   const used = new Set();
-  const withSlugs = catalogue.products.map((p) => {
-    let slug = slugify(p.name, 70);
+  const withSlugs = catalogue.products.map((raw) => {
+    const p = fixCategory(raw);
+    const n = names.get(p.source_folder);
+    const name = n?.nom_propose || p.name;
+    let slug = slugify(name, 70);
     if (used.has(slug) && p.product_codes[0]) slug = slugify(`${slug}-${p.product_codes[0]}`, 90);
-    for (let i = 2; used.has(slug); i++) slug = `${slugify(p.name, 70)}-${i}`;
+    for (let i = 2; used.has(slug); i++) slug = `${slugify(name, 70)}-${i}`;
     used.add(slug);
-    return { ...p, slug, category: rename(p.category), subcategory: rename(p.subcategory) };
+    return {
+      ...p,
+      slug,
+      name,
+      legacyName: p.name,
+      subtitle: n?.sous_titre ?? '',
+      badges: (n?.badges ?? '').split(/\s*,\s*/).filter(Boolean),
+      category: rename(p.category),
+      subcategory: rename(p.subcategory),
+    };
   });
 
   // Catégories
@@ -176,7 +246,18 @@ async function main() {
     const cat = catBySlug.get(p.category);
     const sub = cat.subcategories.find((s) => s.name === p.subcategory) ?? null;
     const images = [];
-    for (const [i, img] of p.images.entries()) images.push(await publishImage(img, p.slug, i + 1));
+    const seen = [];
+    for (const [i, img] of p.images.entries()) {
+      const mode = imageModes.get(`${p.source_folder}#${i + 1}`) ?? 'cutout';
+      if (mode === 'masquer') continue;
+      // Même photo en double (fichiers différents, contenu identique) : on n'en garde qu'une
+      const print = await fingerprint(path.join(ROOT, img));
+      if (seen.some((s) => similar(s, print))) continue;
+      seen.push(print);
+      images.push(await publishImage(img, p.slug, images.length + 1, mode));
+    }
+    // Photo détourée d'abord (carte catalogue, visuel principal) ; tableaux et schémas ensuite
+    images.sort((a, b) => b.cutout - a.cutout);
     const documents = [];
     for (const d of p.documents) {
       const pub = await publishDoc(d);
@@ -189,6 +270,9 @@ async function main() {
     full.push({
       slug: p.slug,
       name: p.name,
+      subtitle: p.subtitle,
+      badges: p.badges,
+      legacyName: p.legacyName,
       codes: p.product_codes,
       category: { slug: cat.slug, name: cat.name, short: cat.short },
       subcategory: sub && { slug: sub.slug, name: sub.name },
@@ -204,6 +288,8 @@ async function main() {
     index.push({
       slug: p.slug,
       name: p.name,
+      subtitle: p.subtitle,
+      badges: p.badges,
       codes: p.product_codes,
       category: cat.slug,
       subcategory: sub?.slug ?? null,
@@ -223,6 +309,11 @@ async function main() {
     peers.sort((a, b) => (b.family === prod.family) - (a.family === prod.family) || !!b.image - !!a.image);
     prod.related = peers.slice(0, 4).map((o) => o.slug);
     await writeFile(path.join(DATA_OUT, 'products', `${prod.slug}.json`), JSON.stringify(prod));
+  }
+  // Fiches d'anciens slugs (produit renommé) : supprimées
+  const current = new Set(full.map((x) => `${x.slug}.json`));
+  for (const f of await readdir(path.join(DATA_OUT, 'products'))) {
+    if (!current.has(f)) await rm(path.join(DATA_OUT, 'products', f));
   }
 
   // Téléchargements : manuels d'installation + brochures (dédoublonnés)
@@ -254,6 +345,7 @@ async function main() {
   await writeFile(path.join(DATA_OUT, 'index.json'), JSON.stringify({ products: index, featured }));
   await writeFile(path.join(DATA_OUT, 'categories.json'), JSON.stringify(categories, null, 2));
   await writeFile(path.join(DATA_OUT, 'downloads.json'), JSON.stringify(downloads, null, 2));
+  await writeFile(path.join(DATA_OUT, 'stats.json'), JSON.stringify({ documents: docCache.size, products: index.length }, null, 2));
   const loaders = index
     .map((o) => `  ${JSON.stringify(o.slug)}: () => import('./products/${o.slug}.json').then((m) => m.default as unknown as Product),`)
     .join('\n');

@@ -1,20 +1,16 @@
 import { ChangeDetectionStrategy, Component, computed, effect, inject, input, linkedSignal } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { Meta, Title } from '@angular/platform-browser';
-import { RedirectCommand, ResolveFn, Router, RouterLink } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { CatalogueService } from '../data/catalogue.service';
 import type { DocumentType, Product } from '../data/models';
 import { SITE } from '../site.config';
 import { ContactBand } from '../shared/contact-band';
 import { Icon } from '../shared/icon';
+import { Badges } from '../shared/badges';
 import { ProductCard } from '../shared/product-card';
+import { ProductVisual } from '../shared/product-visual';
 import { Reveal } from '../shared/reveal.directive';
-
-export const productResolver: ResolveFn<Product> = async (route) => {
-  const router = inject(Router);
-  const product = await inject(CatalogueService).product(route.paramMap.get('slug') ?? '');
-  return product ?? new RedirectCommand(router.parseUrl('/not-found'), { skipLocationChange: true });
-};
 
 const DOC_LABELS: Record<DocumentType, string> = {
   datasheet: 'Datasheet',
@@ -25,7 +21,7 @@ const DOC_LABELS: Record<DocumentType, string> = {
 
 @Component({
   selector: 'app-product',
-  imports: [RouterLink, Icon, ProductCard, ContactBand, Reveal],
+  imports: [RouterLink, Icon, ProductCard, ProductVisual, Badges, ContactBand, Reveal],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './product.html',
   styleUrl: './product.scss',

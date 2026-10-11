@@ -4,19 +4,20 @@ import { CatalogueService } from '../data/catalogue.service';
 import { SITE } from '../site.config';
 import { ContactBand } from '../shared/contact-band';
 import { Icon } from '../shared/icon';
+import { KeyFigures } from '../shared/key-figures';
 import { Marquee } from '../shared/marquee';
 import { ProductCard } from '../shared/product-card';
 import { Reveal } from '../shared/reveal.directive';
 
 @Component({
   selector: 'app-home',
-  imports: [RouterLink, Icon, Marquee, ProductCard, ContactBand, Reveal],
+  imports: [RouterLink, Icon, Marquee, ProductCard, ContactBand, KeyFigures, Reveal],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <!-- Hero -->
     <section class="hero container">
       <img class="hero__logo" src="brand/contextplus-logo.png" alt="" width="300" height="178" />
-      <h1 class="h1">Fire Detection & Suppression Systems, Made in the UK</h1>
+      <h1 class="h1">Fire Detection & Suppression Systems, <em class="accent">made in the UK</em></h1>
       <p class="lead">
         Since {{ site.founded }}, Context Plus has manufactured certified fire alarm, detection and suppression products
         in Great Britain and Ireland, trusted by installers and distributors in over {{ site.countries }} countries.
@@ -60,7 +61,7 @@ import { Reveal } from '../shared/reveal.directive';
     <section class="section container">
       <div class="head" appReveal>
         <p class="eyebrow">Product ranges</p>
-        <h2 class="h2">Complete fire safety systems</h2>
+        <h2 class="h2">Complete fire <em class="accent">safety</em> systems</h2>
       </div>
       <ul class="ranges" appReveal="li">
         @for (cat of catalogue.navCategories; track cat.slug; let i = $index) {
@@ -78,17 +79,19 @@ import { Reveal } from '../shared/reveal.directive';
       </ul>
     </section>
 
+    <app-key-figures />
+
     <!-- Produits mis en avant -->
     <section class="section container">
       <div class="head head--row" appReveal>
         <div>
           <p class="eyebrow">Products</p>
-          <h2 class="h2">Featured Products</h2>
+          <h2 class="h2">Featured <em class="accent">products</em></h2>
         </div>
-        <a routerLink="/products" class="link-arrow">View all {{ catalogue.products.length }} products <app-icon name="chevron" /></a>
+        <a routerLink="/products" class="link-arrow">View all {{ catalogue.productCount }} products <app-icon name="chevron" /></a>
       </div>
       <div class="grid" appReveal="app-product-card">
-        @for (p of catalogue.featured; track p.slug) {
+        @for (p of catalogue.featured(); track p.slug) {
           <app-product-card [product]="p" />
         }
       </div>

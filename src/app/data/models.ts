@@ -1,7 +1,11 @@
 export interface ProductImage {
   src: string;
+  /** « /…/1-480.webp 480w, /…/1.webp 1000w » */
+  srcset: string;
   width: number;
   height: number;
+  /** true : produit détouré sur fond transparent (ombre portée possible) */
+  cutout: boolean;
 }
 
 export type DocumentType = 'datasheet' | 'certificate' | 'brochure' | 'manual';
@@ -22,6 +26,12 @@ export interface Spec {
 export interface Product {
   slug: string;
   name: string;
+  /** Détails retirés du nom (« Code/keyswitch entry, c/w 3A PSU… ») */
+  subtitle: string;
+  /** Certifications : LPCB, UL, FM, VdS, EN54-3… */
+  badges: string[];
+  /** Nom d'origine (avant nettoyage), gardé pour la recherche */
+  legacyName: string;
   codes: string[];
   category: { slug: string; name: string; short: string };
   subcategory: { slug: string; name: string } | null;
@@ -39,6 +49,8 @@ export interface Product {
 export interface ProductSummary {
   slug: string;
   name: string;
+  subtitle: string;
+  badges: string[];
   codes: string[];
   category: string;
   subcategory: string | null;

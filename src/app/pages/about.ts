@@ -4,6 +4,7 @@ import { CatalogueService } from '../data/catalogue.service';
 import { SITE } from '../site.config';
 import { ContactBand } from '../shared/contact-band';
 import { Icon } from '../shared/icon';
+import { KeyFigures } from '../shared/key-figures';
 import { Marquee } from '../shared/marquee';
 import { Reveal } from '../shared/reveal.directive';
 
@@ -15,7 +16,6 @@ const VALUES = [
   { title: 'Training', text: 'Full manuals and technical training provided for our partners.' },
   { title: 'Certified products', text: 'Independently tested and certified, ready for export.' },
 ];
-const APPROVALS = ['LPCB', 'UL', 'BSI', 'Intertek', 'FM', 'VdS'];
 const COUNTRIES =
   'Afghanistan, Algeria, Angola, Armenia, Australia, Azerbaijan, Bahrain, Bangladesh, Barbados, Benin, Brunei Darussalam, Brazil, Bulgaria, Burkina Faso, Burundi, Cambodia, Cameroon, Central African Republic, Côte d’Ivoire, Cyprus, Democratic Republic of Congo, Djibouti, Egypt, Estonia, Ethiopia, Gambia, Georgia, Gibraltar, Ghana, Greece, Hong Kong, Iceland, India, Indonesia, Iraq, Ireland, Jamaica, Jordan, Kazakhstan, Kenya, Kosovo, Kuwait, Latvia, Lebanon, Libya, Lithuania, Malawi, Malaysia, Maldives, Malta, Mauritania, Mauritius, Mongolia, Morocco, Myanmar, Nepal, Nigeria, Oman, Pakistan, Philippines, Portugal, Qatar, Rwanda, Saudi Arabia, Senegal, Seychelles, Sierra Leone, Singapore, South Africa, Sri Lanka, Sudan, Taiwan, Tanzania, Thailand, Tunisia, Turkey, Uganda, United Arab Emirates, Vietnam, Yemen, Zambia, Zimbabwe'.split(
     ', ',
@@ -23,24 +23,24 @@ const COUNTRIES =
 
 @Component({
   selector: 'app-about',
-  imports: [RouterLink, Icon, Marquee, ContactBand, Reveal],
+  imports: [RouterLink, Icon, Marquee, KeyFigures, ContactBand, Reveal],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <section class="hero container">
       <p class="eyebrow">Four decades of expertise</p>
-      <h1 class="display">Leading the way in fire alarms</h1>
+      <h1 class="display">Leading the way in <em class="accent">fire alarms</em></h1>
       <p class="lead">
         Established in Manchester in {{ site.founded }} with sales in over {{ site.countries }} countries, Context Plus is
         recognised as the largest exporter of conventional fire detection systems from the UK.
       </p>
     </section>
 
-    <app-marquee [items]="approvals" />
+    <app-marquee [items]="marquee" />
 
     <section class="section container split">
       <div appReveal>
         <p class="eyebrow">Our company</p>
-        <h2 class="h2">Manufactured in Great Britain &amp; Ireland</h2>
+        <h2 class="h2">Manufactured in <em class="accent">Great Britain</em> &amp; Ireland</h2>
       </div>
       <div class="prose" appReveal="p, ul">
         <p>
@@ -61,17 +61,12 @@ const COUNTRIES =
       </div>
     </section>
 
-    <section class="stats container" appReveal=".stat">
-      <div class="stat"><span class="stat__num">{{ site.founded }}</span><span>Established in Manchester</span></div>
-      <div class="stat"><span class="stat__num">{{ site.countries }}</span><span>Countries supplied</span></div>
-      <div class="stat"><span class="stat__num">{{ catalogue.products.length }}</span><span>Products in the catalogue</span></div>
-      <div class="stat"><span class="stat__num">{{ catalogue.documentCount }}+</span><span>Manuals &amp; brochures</span></div>
-    </section>
+    <app-key-figures />
 
     <section class="section container">
       <div class="head" appReveal>
         <p class="eyebrow">Values</p>
-        <h2 class="h2">What we stand for</h2>
+        <h2 class="h2">What we <em class="accent">stand for</em></h2>
       </div>
       <ol class="values" appReveal="li">
         @for (v of values; track v.title; let i = $index) {
@@ -88,7 +83,7 @@ const COUNTRIES =
       <div class="container split">
         <div appReveal>
           <p class="eyebrow">Mission</p>
-          <h2 class="h2">Quality products, first-class service.</h2>
+          <h2 class="h2">Quality products, <em class="accent">first-class</em> service.</h2>
         </div>
         <div class="prose" appReveal="p">
           <p>
@@ -123,9 +118,6 @@ const COUNTRIES =
     .hero { display: grid; justify-items: center; gap: 24px; padding-block: clamp(64px, 10vw, 140px); text-align: center; .display { max-width: 1000px; } .lead { max-width: 700px; } }
     .split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: clamp(32px, 6vw, 96px); align-items: start; .eyebrow { margin-bottom: 16px; } }
     .prose { display: grid; gap: 18px; color: var(--ink-soft); font-size: 17px; line-height: 1.75; ul { margin: 0; padding-left: 20px; display: grid; gap: 8px; } li::marker { color: var(--accent); } .btn { justify-self: start; margin-top: 8px; } }
-    .stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-block: 1px solid var(--ink); }
-    .stat { display: grid; gap: 6px; padding: 36px 24px; border-right: 1px solid var(--line); color: var(--body); &:last-child { border-right: 0; } }
-    .stat__num { color: var(--ink); font-size: clamp(36px, 4.6vw, 64px); font-weight: 800; letter-spacing: -0.04em; line-height: 1; }
     .head { display: grid; gap: 14px; margin-bottom: clamp(32px, 5vw, 56px); max-width: 760px; }
     .values { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0; margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--line); }
     .values li { display: grid; align-content: start; gap: 10px; padding: 28px 24px 28px 0; border-right: 1px solid var(--line); &:not(:first-child) { padding-left: 24px; } &:last-child { border-right: 0; } }
@@ -136,9 +128,6 @@ const COUNTRIES =
     .countries { columns: 4 200px; column-gap: 32px; margin: 0; padding: 0; list-style: none; li { padding: 8px 0; border-bottom: 1px solid var(--line); break-inside: avoid; font-size: 15px; } }
     @media (max-width: 960px) {
       .split { grid-template-columns: 1fr; }
-      .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .stat:nth-child(2) { border-right: 0; }
-      .stat:nth-child(-n + 2) { border-bottom: 1px solid var(--line); }
       .values { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .values li { padding: 24px 16px !important; border-bottom: 1px solid var(--line); }
     }
@@ -150,5 +139,5 @@ export class About {
   protected readonly site = SITE;
   protected readonly values = VALUES;
   protected readonly countries = COUNTRIES;
-  protected readonly approvals = APPROVALS.map((a) => `${a} approved`);
+  protected readonly marquee = ['UK manufactured', `Since ${SITE.founded}`, `${SITE.countries} countries`, 'Full manuals & training'];
 }

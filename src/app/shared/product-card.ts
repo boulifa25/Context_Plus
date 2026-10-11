@@ -2,29 +2,29 @@ import { ChangeDetectionStrategy, Component, computed, inject, input } from '@an
 import { RouterLink } from '@angular/router';
 import { CatalogueService } from '../data/catalogue.service';
 import type { ProductSummary } from '../data/models';
+import { Badges } from './badges';
 import { Icon } from './icon';
+import { ProductVisual } from './product-visual';
 
 @Component({
   selector: 'app-product-card',
-  imports: [RouterLink, Icon],
+  imports: [RouterLink, Icon, Badges, ProductVisual],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @let p = product();
-    <article class="card">
+    <article class="card" (pointerenter)="prefetch()" (focusin)="prefetch()" (touchstart)="prefetch()">
       <a [routerLink]="['/products', p.slug]" class="card__media" tabindex="-1" aria-hidden="true">
-        @if (p.image; as img) {
-          <img class="product-img" [src]="img.src" [width]="img.width" [height]="img.height" alt="" loading="lazy" decoding="async" />
-        } @else {
-          <span class="placeholder">
-            <img src="brand/contextplus-logo.png" alt="" width="300" height="178" loading="lazy" />
-          </span>
-        }
+        <app-product-visual [image]="p.image" [category]="p.category" [transitionName]="'p-' + p.slug" [eager]="priority()" />
         @if (p.docs) {
           <span class="docs">{{ p.docs }} {{ p.docs > 1 ? 'documents' : 'document' }}</span>
         }
       </a>
       <p class="eyebrow eyebrow--dash">{{ categoryName() }}</p>
       <h3 class="card__title"><a [routerLink]="['/products', p.slug]">{{ p.name }}</a></h3>
+      @if (p.subtitle) {
+        <p class="card__subtitle">{{ p.subtitle }}</p>
+      }
+      <app-badges [badges]="p.badges" [max]="4" />
       <p class="card__excerpt">{{ p.excerpt }}</p>
       <div class="card__foot">
         <div class="chips">
@@ -41,18 +41,11 @@ import { Icon } from './icon';
     .card { display: flex; flex-direction: column; height: 100%; }
     .card__media {
       position: relative;
-      display: grid;
-      place-items: center;
+      display: block;
       aspect-ratio: 4 / 3;
       margin-bottom: 24px;
-      background: var(--paper); /* fond opaque : sinon le multiply est isolé par l'animation */
-      img { max-height: 100%; width: auto; transition: transform 0.6s var(--ease); }
-      &:hover img { transform: scale(1.04); }
-    }
-    .placeholder {
-      display: grid; place-items: center; width: 100%; height: 100%;
-      border: 1px dashed var(--line-strong); border-radius: var(--radius);
-      img { width: 38%; opacity: 0.35; filter: grayscale(1); }
+      app-product-visual { transition: transform 0.6s var(--ease); }
+      &:hover app-product-visual { transform: scale(1.04); }
     }
     .docs {
       position: absolute; top: 0; right: 0;
@@ -60,12 +53,19 @@ import { Icon } from './icon';
     }
     .eyebrow { font-size: 11px; }
     .card__title {
-      margin: 12px 0 10px;
+      margin: 12px 0 0;
       font-size: 20px; font-weight: 600; line-height: 1.25; letter-spacing: -0.01em;
       display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
       a:hover { color: var(--accent); }
     }
+    .card__subtitle {
+      margin-top: 6px;
+      color: var(--muted); font-size: 14px; line-height: 1.45;
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+    }
+    app-badges { margin-top: 12px; }
     .card__excerpt {
+      margin-top: 12px;
       color: var(--ink-soft); font-size: 15px; line-height: 1.55;
       display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
     }
@@ -79,6 +79,13 @@ import { Icon } from './icon';
 })
 export class ProductCard {
   readonly product = input.required<ProductSummary>();
+  /** Carte visible dès l'ouverture : image chargée en priorité (meilleur LCP) */
+  readonly priority = input(false);
   private readonly catalogue = inject(CatalogueService);
   protected readonly categoryName = computed(() => this.catalogue.category(this.product().category)?.name ?? '');
+
+  /** Survol / focus : la fiche et sa photo sont prêtes avant le clic. */
+  protected prefetch(): void {
+    this.catalogue.prefetch(this.product().slug);
+  }
 }

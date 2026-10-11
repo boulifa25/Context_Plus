@@ -4,6 +4,7 @@ import {
   isMainModule,
   writeResponseToNodeResponse,
 } from '@angular/ssr/node';
+import compression from 'compression';
 import express from 'express';
 import { join } from 'node:path';
 
@@ -11,6 +12,9 @@ const browserDistFolder = join(import.meta.dirname, '../browser');
 
 const app = express();
 const angularApp = new AngularNodeAppEngine();
+
+// Gzip/Brotli-like compression of HTML, JS, CSS, JSON (≈ ×4 smaller on the wire)
+app.use(compression());
 
 /**
  * Example Express Rest API endpoints can be defined here.
@@ -32,6 +36,12 @@ app.use(
     maxAge: '1y',
     index: false,
     redirect: false,
+    setHeaders: (res, path) => {
+      // Fichiers à nom haché (chunk-ABC123.js…) : cache permanent. Médias/polices/logos à nom
+      // fixe (régénérés par npm run catalogue) : 7 jours pour ne pas garder une image périmée.
+      const hashed = /[-.][A-Z0-9]{8}\.(js|css|mjs)$/.test(path);
+      res.setHeader('Cache-Control', hashed ? 'public, max-age=31536000, immutable' : 'public, max-age=604800');
+    },
   }),
 );
 

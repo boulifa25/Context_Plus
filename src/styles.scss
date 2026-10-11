@@ -1,6 +1,37 @@
 // Design system repris de SelectFire Plus, aux couleurs Context Plus.
 // Pour revenir à l'accent rouge de la référence : --accent: #fe0000; --accent-dark: #b8000b; --accent-soft: #fff1f1;
 
+// Police Onest (variable 400–800, licence OFL) hébergée sur le site : pas d'appel à Google Fonts
+@font-face {
+  font-family: 'Onest';
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url('/fonts/onest-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+    U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Onest';
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url('/fonts/onest-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329,
+    U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+// Police d'accent (comme la référence) : un mot en italique dans certains titres
+@font-face {
+  font-family: 'Instrument Serif';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/instrument-serif-italic-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+20AC, U+2122;
+}
+
 :root {
   // Couleurs
   --paper: #fbfaf7;
@@ -19,6 +50,8 @@
 
   // Typo & rythme
   --sans: 'Onest', 'Helvetica Neue', 'Segoe UI', Arial, sans-serif;
+  --serif: 'Instrument Serif', Georgia, 'Times New Roman', serif;
+  --night: #13102f; // fond des sections sombres (marine profond)
   --container: 1280px;
   --gutter: clamp(16px, 4vw, 40px);
   --section-y: clamp(56px, 8vw, 104px);
@@ -130,6 +163,50 @@ p {
 }
 
 // ---------- Typographie ----------
+
+// <em class="accent">mot</em> dans un titre : italique serif, légèrement plus grand (cf. référence)
+.accent {
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 1.08em;
+  letter-spacing: -0.01em;
+  color: var(--accent);
+}
+
+// ---------- Sections sombres ----------
+// Les composants utilisent les variables de couleur : il suffit de les redéfinir ici.
+.section--dark {
+  --ink: #fbfaf7;
+  --ink-soft: rgba(251, 250, 247, 0.82);
+  --body: rgba(251, 250, 247, 0.7);
+  --muted: rgba(251, 250, 247, 0.58);
+  --line: rgba(255, 255, 255, 0.14);
+  --line-strong: rgba(255, 255, 255, 0.3);
+  --accent: var(--sky);
+  --accent-soft: rgba(143, 208, 242, 0.12);
+
+  background: var(--night);
+  color: var(--ink);
+
+  .btn--primary {
+    color: var(--night);
+
+    &:hover {
+      background: var(--white);
+      border-color: var(--white);
+    }
+  }
+
+  .btn:not(.btn--primary):hover {
+    color: var(--night);
+  }
+
+  ::selection {
+    background: var(--sky);
+    color: var(--night);
+  }
+}
 
 .eyebrow {
   display: inline-flex;
@@ -287,9 +364,30 @@ p {
   object-fit: contain;
 }
 
-// Animation d'apparition (pilotée par la directive appReveal)
-[appReveal] {
-  will-change: transform, opacity;
+// Animation d'apparition (directive appReveal)
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity 0.8s var(--ease) var(--reveal-delay, 0ms),
+    transform 0.8s var(--ease) var(--reveal-delay, 0ms);
+}
+
+.reveal--in {
+  opacity: 1;
+  transform: none;
+}
+
+// Transitions entre pages (View Transitions API)
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.28s;
+  animation-timing-function: var(--ease);
+}
+
+::view-transition-group(*) {
+  animation-duration: 0.45s;
+  animation-timing-function: var(--ease);
 }
 
 @media (prefers-reduced-motion: reduce) {

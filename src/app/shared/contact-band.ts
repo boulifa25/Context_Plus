@@ -13,12 +13,13 @@ import { Reveal } from './reveal.directive';
   selector: 'app-contact-band',
   imports: [RouterLink, Icon, Reveal],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: { '[class.section--dark]': "variant() === 'full'" },
   template: `
     <section class="band container" [class.band--compact]="variant() === 'compact'" appReveal>
       <div class="band__text">
         <p class="eyebrow">{{ variant() === 'full' ? 'Contact us' : 'Support' }}</p>
         @if (variant() === 'full') {
-          <h2 class="h2">Interested in working together?</h2>
+          <h2 class="h2">Interested in <em class="accent">working together?</em></h2>
           <p class="lead">Send us your project details and one of our export sales managers will get back to you within one working day.</p>
           <a routerLink="/contact" class="btn btn--primary">Send an enquiry <app-icon name="chevron" /></a>
         } @else {
@@ -45,6 +46,7 @@ import { Reveal } from './reveal.directive';
   `,
   styles: `
     :host { display: block; }
+    :host(.section--dark) .band { border-top: 0; }
     .band {
       display: grid;
       grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);

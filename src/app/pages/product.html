@@ -13,14 +13,8 @@
 <section class="hero container">
   <div class="gallery">
     <div class="gallery__main">
-      @if (activeImage(); as img) {
-        <img class="product-img" [src]="img.src" [width]="img.width" [height]="img.height" [alt]="p.name" fetchpriority="high" />
-      } @else {
-        <span class="gallery__empty">
-          <img src="brand/contextplus-logo.png" alt="" width="300" height="178" />
-          <span>Image coming soon</span>
-        </span>
-      }
+      <app-product-visual [image]="activeImage()" [category]="p.category.slug" [alt]="p.name" [eager]="true"
+                          sizes="(max-width: 860px) 92vw, 560px" [transitionName]="'p-' + p.slug" />
     </div>
     @if (p.images.length > 1) {
       <ul class="gallery__thumbs">
@@ -28,7 +22,7 @@
           <li>
             <button type="button" [class.active]="img === activeImage()" (click)="activeImage.set(img)"
                     [attr.aria-label]="'Show image ' + (i + 1)">
-              <img class="product-img" [src]="img.src" alt="" width="80" height="80" loading="lazy" />
+              <app-product-visual [image]="img" [category]="p.category.slug" sizes="72px" />
             </button>
           </li>
         }
@@ -38,7 +32,13 @@
 
   <div class="info">
     <p class="eyebrow">{{ p.subcategory?.name ?? p.category.name }}</p>
-    <h1 class="h1 info__title">{{ p.name }}</h1>
+    <div class="info__head">
+      <h1 class="h1 info__title">{{ p.name }}</h1>
+      @if (p.subtitle) {
+        <p class="info__subtitle">{{ p.subtitle }}</p>
+      }
+    </div>
+    <app-badges [badges]="p.badges" />
     <p class="lead">{{ p.summary }}</p>
     @if (p.codes.length) {
       <dl class="codes">
